@@ -1,11 +1,12 @@
 apply plugin: 'com.android.application'
+apply plugin : 'com.jakewharton.butterknife'
 
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
 
     defaultConfig {
-        applicationId "com.jzh.mvp_demo"
+        applicationId "com.jzh.mvp"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
@@ -15,9 +16,9 @@ android {
     }
 
     buildTypes {
-        debug {
-            applicationIdSuffix ".debug"  //修改APPID，再后面加上.debug
-        }
+//        debug {
+//            applicationIdSuffix ".debug"  //修改APPID，再后面加上.debug
+//        }
 
         release {
             minifyEnabled false
@@ -58,7 +59,9 @@ dependencies {
     implementation "com.afollestad.material-dialogs:core:0.9.6.0"
     implementation "com.afollestad.material-dialogs:commons:0.9.6.0"
     //黄油刀butterknife
-    implementation "com.jakewharton:butterknife:8.8.1"
+    implementation'com.jakewharton:butterknife:10.1.0'
+    annotationProcessor'com.jakewharton:butterknife-compiler:10.1.0'
+
 
 
 }
