@@ -1,6 +1,9 @@
 package com.jzh.mvp.mvp.base;
 
 
+import com.jzh.mvp.base.BaseApplication;
+import com.jzh.mvp.injection.component.AppComponent;
+
 import java.lang.ref.WeakReference;
 
 /**
@@ -14,10 +17,11 @@ public class BasePresenter<T extends IBaseContract.IBaseView,P extends IBaseCont
     // 防止 Activity 不走 onDestory() 方法，所以采用弱引用来防止内存泄漏
     private WeakReference<T> mViewRef;
     protected P model;
-
+    protected AppComponent mAppComponent;
 
     public BasePresenter(T view){
         mViewRef = new WeakReference<T>(view);
+        init();
     }
 
     @Override
@@ -90,5 +94,10 @@ public class BasePresenter<T extends IBaseContract.IBaseView,P extends IBaseCont
                 getView().dismissLoading();
             }
         }
+    }
+
+    //初始化注入类
+    protected void init() {
+        mAppComponent = BaseApplication.application.getmAppComponent();
     }
 }
