@@ -67,6 +67,12 @@ public abstract class BaseMvpActivity<T extends IBaseContract.IBasePresenter> ex
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.onStop();
+    }
+
+    @Override
     public void showError(String msg) {
         Toast.makeText(context,msg,Toast.LENGTH_SHORT).show();
     }

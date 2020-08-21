@@ -64,7 +64,7 @@ public class BasePresenter<T extends IBaseContract.IBaseView,P extends IBaseCont
     }
 
     /**
-     * 拦截回调方法，中间插入取消loading操作
+     * 拦截回调方法，中间插入oading操作
      * @param <T>
      */
     protected class ApiCallbackWrapper<T> implements HttpResponseListener<T>{
