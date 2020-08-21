@@ -27,7 +27,20 @@ public class IBaseContract {
 
         public void  dismissLoading();
 
-        public void  showDialog(String msg);
+        /**
+         * 显示提示框
+         * @param msg
+         */
+        public void  showInquiryDialog(String msg);
+
+        /**
+         * 显示确定提示框
+         * @param title         提示标题
+         * @param message       提示内容
+         * @param buttonConfirm 确定按钮文字
+         * @param buttonCancel  取消按钮文字
+         */
+        public void showConfirmDialog(String title, String message, String buttonConfirm, String buttonCancel);
     }
 
     public interface IBaseModel{

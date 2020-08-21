@@ -4,14 +4,20 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.jzh.mvp.R;
 import com.jzh.mvp.helper.DialogHelper;
+import com.jzh.mvp.mvp.listener.IListener;
+
+import org.apache.commons.lang3.StringUtils;
 
 import butterknife.ButterKnife;
 
@@ -19,7 +25,8 @@ import butterknife.ButterKnife;
  * @author 金振华 2019年10月31日14:19:11
  * @param <T>
  */
-public abstract class BaseMvpActivity<T extends IBaseContract.IBasePresenter> extends AppCompatActivity implements IBaseContract.IBaseView {
+public abstract class BaseMvpActivity<T extends IBaseContract.IBasePresenter> extends AppCompatActivity
+        implements IBaseContract.IBaseView, IListener,View.OnClickListener {
     protected T presenter;
     protected Context context;
     /**
@@ -27,6 +34,17 @@ public abstract class BaseMvpActivity<T extends IBaseContract.IBasePresenter> ex
      */
     protected Dialog loadingDialog;
     protected Toast toast;
+
+    /**
+     * 确认框
+     */
+    protected MaterialDialog confirmDialog;
+    /**
+     * Inquiry对话框
+     */
+    protected MaterialDialog inquiryDialog;
+    private MaterialDialog.SingleButtonCallback confirmCallback = (dialog, which) -> onConfirmCallback();
+    private MaterialDialog.SingleButtonCallback cancelCallback = (dialog, which) -> onCancelCallback();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +54,10 @@ public abstract class BaseMvpActivity<T extends IBaseContract.IBasePresenter> ex
         setContentView(getLayoutId());
         ButterKnife.bind(this);
         initViewAndData(savedInstanceState);
+
         loadingDialog = DialogHelper.loadingDialog(context);
+        inquiryDialog = DialogHelper.inquiryDialog(context, this);
+        confirmDialog = DialogHelper.confirmDialog(context, confirmCallback, cancelCallback);
     }
 
     @Override
@@ -90,9 +111,81 @@ public abstract class BaseMvpActivity<T extends IBaseContract.IBasePresenter> ex
         }
     }
 
-    @Override
-    public void showDialog(String msg) {
 
+    @Override
+    public void showInquiryDialog(String message) {
+        if (null != inquiryDialog && !inquiryDialog.isShowing()) {
+            runOnUiThread(() -> {
+                if (null != inquiryDialog.getCustomView()) {
+                    TextView tvMessage = inquiryDialog.getCustomView().findViewById(R.id.dialog_common_inquiry_tv_message);
+                    tvMessage.setText(message);
+                    inquiryDialog.show();
+                } else {
+                    Log.e(this.getClass().getName(),"inquiry dialog custom view is null.");
+                }
+            });
+        }
+    }
+
+    @Override
+    public void showConfirmDialog(String title, String message, String buttonConfirm, String buttonCancel) {
+        if(confirmDialog != null && !confirmDialog.isShowing()){
+            runOnUiThread(() -> {
+                MaterialDialog.Builder builder = confirmDialog.getBuilder();
+                if (StringUtils.isNotEmpty(title)) {
+                    builder.title(title);
+                }
+                if (StringUtils.isNotEmpty(message)) {
+                    builder.content(message);
+                }
+                if (StringUtils.isNotEmpty(buttonConfirm)) {
+                    builder.positiveText(buttonConfirm);
+                }
+                if (StringUtils.isNotEmpty(buttonCancel)) {
+                    builder.negativeText(buttonCancel);
+                }
+                builder.show();
+            });
+        }
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        if (R.id.dialog_common_inquiry_btn_confirm == v.getId()) {
+            onInquiryConfirm();
+        } else if (R.id.dialog_common_inquiry_btn_cancel == v.getId()) {
+            onInquiryCancel();
+        }
+    }
+
+    @Override
+    public void onInquiryConfirm() {
+        if (null != inquiryDialog && inquiryDialog.isShowing()) {
+            inquiryDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onInquiryCancel() {
+        if (null != inquiryDialog && inquiryDialog.isShowing()) {
+            inquiryDialog.dismiss();
+        }
+    }
+
+
+    @Override
+    public void onConfirmCallback() {
+        if (null != confirmDialog && confirmDialog.isShowing()) {
+            confirmDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onCancelCallback() {
+        if (null != confirmDialog && confirmDialog.isShowing()) {
+            confirmDialog.dismiss();
+        }
     }
 
     /**
