@@ -24,12 +24,14 @@ public class BaseModel implements IBaseContract.IBaseModel {
     @Override
     public void onStop() {
         //解除订阅
+        disposableWhenStop.dispose();
         disposableWhenStop.clear();
     }
 
     @Override
     public void onDestory() {
         //解除订阅
+        disposableWhenStop.dispose();
         disposableWhenDestory.clear();
     }
 
